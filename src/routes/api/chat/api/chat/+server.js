@@ -1,16 +1,15 @@
 import { createOllama } from "ollama-ai-provider";
 import { streamText } from "ai";
 
-const olama = createOllama({
-    apiKey: process.env.OLAMA_API_KEY,
-});
+const olama = createOllama();
 
-export const POST = async (req) => {
+export async function POST(req) {
     const { messages } = await req.json();
-    const response = await olama.chat.completions.create({
-        model: olama("gemma2:2b"),
+
+    const result = await streamText({
+        model: olama("gemma2"),
         messages,
     });
-    return new Response(JSON.stringify(response));
+    return result.toDataStreamResponse();
 };
 
